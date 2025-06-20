@@ -73,6 +73,55 @@ app.post(
   }
 );
 
+/* DELETE /images/:category/:filename  — delete one file */
+app.delete("/images/:category/:filename", validateCategory, (req, res) => {
+  const { category, filename } = req.params;
+
+  // ‼️ Hard-stop any path-traversal attempts
+  const safeName = path.basename(filename);
+  const filePath = path.join(IMAGE_ROOT, category, safeName);
+
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      if (err.code === "ENOENT")
+        return res.status(404).json({ error: "File not found" });
+      console.error("unlink error:", err);
+      return res.status(500).json({ error: "Unable to delete file" });
+    }
+    res.json({ deleted: `/images/${category}/${safeName}` });
+  });
+});
+
+/* DELETE /images/:category  — delete every image in the album */
+app.delete("/images/:category", validateCategory, (req, res) => {
+  const { category } = req.params;
+  const dir = path.join(IMAGE_ROOT, category);
+
+  fs.readdir(dir, (err, files) => {
+    if (err) {
+      console.error("dir read error:", err);
+      return res.status(500).json({ error: "Unable to list files" });
+    }
+
+    /* Remove each file serially to keep it simple */
+    let failed = [];
+    files.forEach((f) => {
+      try {
+        fs.unlinkSync(path.join(dir, f));
+      } catch (e) {
+        failed.push(f);
+      }
+    });
+
+    if (failed.length)
+      return res
+        .status(500)
+        .json({ error: "Some files could not be deleted", failed });
+
+    res.json({ deletedAll: true, album: category });
+  });
+});
+
 /* ───────────────── START ───────────────── */
 app.listen(PORT, () =>
   console.log(`Gallery backend running at http://localhost:${PORT}`)
