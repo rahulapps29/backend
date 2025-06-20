@@ -1,0 +1,58 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+header {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Gallery Styles - Grid */
+.gallery {
+  display: grid; /* Use grid layout */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(200px, 1fr)
+  ); /* Responsive columns */
+  gap: 15px; /* Space between images */
+  justify-content: center;
+}
+
+.gallery img {
+  width: 100%; /* Fill grid cell */
+  aspect-ratio: 16/9; /* Maintain aspect ratio */
+  object-fit: contain; /* Crop images */
+  object-position: center;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  transition: transform 0.2s ease-in-out;
+  gap: 15px; /* Space between images */
+}
+
+.gallery img:hover {
+  transform: scale(1.05); /* Hover effect */
+  border-color: #4caf50;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #f1f1f1;
+  color: #333;
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Image Gallery</h1>
+      <p>View all uploaded images</p>
+    </header>
+    <div class="container">
+      <div id="gallery" class="gallery"></div>
+    </div>
+    <footer>
+      <p>&copy; 2024 Image Gallery API</p>
+    </footer>
+
+    <script>
+      // Fetch the list of images from the server
+      async function fetchImages() {
+        try {
+          const response = await fetch("/list-images");
+          if (!response.ok) throw new Error("Failed to fetch images");
+          const data = await response.json();
+          displayImages(data.images);
+        } catch (error) {
+          console.error(error);
+          alert("Could not load images.");
+        }
+      }
+
+      // Display the images in the gallery
+      function displayImages(images) {
+        const gallery = document.getElementById("gallery");
+        gallery.innerHTML = ""; // Clear existing images
+        images.forEach((image) => {
+          const img = document.createElement("img");
+          img.src = `/images/${image}`;
+          img.alt = image;
+          gallery.appendChild(img);
+        });
+      }
+
+      // Fetch and display images when the page loads
+      window.onload = fetchImages;
+    </script>
+  </body>
+</html>
